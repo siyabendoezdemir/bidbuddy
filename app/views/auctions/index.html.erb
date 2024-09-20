@@ -1,0 +1,19 @@
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">Active Auctions</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @active_auctions.each do |auction| %>
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-2"><%= auction.item.name %></h2>
+        <p class="text-gray-600 mb-4"><%= truncate(auction.item.description, length: 100) %></p>
+        <p class="text-lg font-bold mb-2">Current Price: <%= number_to_currency(auction.currentPrice) %></p>
+        <p class="text-sm text-gray-500 mb-4">Ends: <%= auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+        <%= link_to "View Auction", auction_path(auction), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @active_auctions.empty? %>
+    <p class="text-center text-gray-600 mt-8">There are no active auctions at the moment.</p>
+  <% end %>
+</div>

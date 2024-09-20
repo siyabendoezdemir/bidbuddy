@@ -1,0 +1,47 @@
+<h2>Admin Dashboard</h2>
+
+<h3>Recent Auctions</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Seller</th>
+      <th>Current Price</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @recent_auctions.each do |auction| %>
+      <tr>
+        <td><%= auction.item.name %></td>
+        <td><%= auction.item.seller.displayName %></td>
+        <td><%= number_to_currency(auction.currentPrice) %></td>
+        <td><%= auction.status.capitalize %></td>
+        <td><%= link_to "View Auction", auction_path(auction) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Recent Accounts</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Display Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Created At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @recent_accounts.each do |account| %>
+      <tr>
+        <td><%= account.displayName %></td>
+        <td><%= account.email %></td>
+        <td><%= account.role.capitalize %></td>
+        <td><%= account.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

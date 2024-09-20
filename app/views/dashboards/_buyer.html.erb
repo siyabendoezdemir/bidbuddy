@@ -1,0 +1,45 @@
+<h2>Welcome, <%= current_account.displayName %>!</h2>
+
+<h3>Active Auctions</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Current Price</th>
+      <th>End Time</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @active_auctions.each do |auction| %>
+      <tr>
+        <td><%= auction.item.name %></td>
+        <td><%= number_to_currency(auction.currentPrice) %></td>
+        <td><%= auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></td>
+        <td><%= link_to "View Auction", auction_path(auction) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>My Recent Bids</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Bid Amount</th>
+      <th>Bid Time</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @my_bids.each do |bid| %>
+      <tr>
+        <td><%= bid.auction.item.name %></td>
+        <td><%= number_to_currency(bid.amount) %></td>
+        <td><%= bid.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+        <td><%= bid.auction.status.capitalize %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,24 @@
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">My Items</h1>
+  
+  <%= link_to "Add New Item", new_item_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block" %>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @items.each do |item| %>
+      <div class="bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-xl font-semibold mb-2"><%= item.name %></h2>
+        <p class="text-gray-600 mb-4"><%= truncate(item.description, length: 100) %></p>
+        <p class="text-lg font-bold mb-4">Starting Price: <%= number_to_currency(item.startingPrice) %></p>
+        
+        <% if item.auction %>
+          <p class="text-sm text-gray-500 mb-2">Auction Status: <%= item.auction.status.capitalize %></p>
+          <%= link_to "View Auction", auction_path(item.auction), class: "text-blue-500 hover:text-blue-700" %>
+        <% else %>
+          <%= link_to "Start Auction", new_auction_path(item_id: item.id), class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
+        <% end %>
+        
+        <%= link_to "Edit", edit_item_path(item), class: "text-blue-500 hover:text-blue-700 ml-4" %>
+      </div>
+    <% end %>
+  </div>
+</div>

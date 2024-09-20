@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item: one
+  startTime: 2024-09-20 08:36:54
+  endTime: 2024-09-20 08:36:54
+  currentPrice: 9.99
+  status: MyString
+
+two:
+  item: two
+  startTime: 2024-09-20 08:36:54
+  endTime: 2024-09-20 08:36:54
+  currentPrice: 9.99
+  status: MyString

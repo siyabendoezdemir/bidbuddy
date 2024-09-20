@@ -1,0 +1,26 @@
+<%# app/views/admin/review_auction.html.erb %>
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">Review Auction</h1>
+
+  <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <h2 class="text-2xl font-semibold mb-4"><%= @auction.item.name %></h2>
+    <p class="mb-2"><strong>Description:</strong> <%= @auction.item.description %></p>
+    <p class="mb-2"><strong>Starting Price:</strong> <%= number_to_currency(@auction.currentPrice) %></p>
+    <p class="mb-2"><strong>Start Time:</strong> <%= @auction.startTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+    <p class="mb-4"><strong>End Time:</strong> <%= @auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+
+    <%= form_with(url: process_auction_admin_path(@auction), method: :post, local: true) do |f| %>
+      <div class="mb-4">
+        <%= f.label :admin_message, "Admin Message (required for declining):", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= f.text_area :admin_message, rows: 3, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <%= f.submit "Approve", name: "approve", class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+        <%= f.submit "Decline", name: "decline", class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= link_to "Back to Dashboard", admin_path, class: "text-blue-500 hover:text-blue-700" %>
+</div>

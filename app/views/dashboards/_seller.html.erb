@@ -1,0 +1,53 @@
+<h2>Welcome, <%= current_account.displayName %>!</h2>
+
+<h3>My Items</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Item Name</th>
+      <th>Starting Price</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @my_items.each do |item| %>
+      <tr>
+        <td><%= item.name %></td>
+        <td><%= number_to_currency(item.startingPrice) %></td>
+        <td><%= item.auction&.status&.capitalize || 'Not Listed' %></td>
+        <td>
+          <% if item.auction %>
+            <%= link_to "View Auction", auction_path(item.auction) %>
+          <% else %>
+            <%= link_to "Create Auction", new_auction_path(item_id: item.id) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>Active Auctions</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Current Price</th>
+      <th>End Time</th>
+      <th>Bids</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @active_auctions.each do |auction| %>
+      <tr>
+        <td><%= auction.item.name %></td>
+        <td><%= number_to_currency(auction.currentPrice) %></td>
+        <td><%= auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></td>
+        <td><%= auction.bids.count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "Add New Item", new_item_path %>

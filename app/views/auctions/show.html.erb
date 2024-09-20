@@ -1,0 +1,60 @@
+<%# app/views/auctions/show.html.erb %>
+<div class="container mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">Auction for <%= @auction.item.name %></h1>
+
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">Item Details</h2>
+      <p><strong>Name:</strong> <%= @auction.item.name %></p>
+      <p><strong>Description:</strong> <%= @auction.item.description %></p>
+    </div>
+
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">Auction Details</h2>
+      <p><strong>Current Price:</strong> <%= number_to_currency(@auction.currentPrice) %></p>
+      <p><strong>Status:</strong> <%= @auction.status.capitalize %></p>
+      <p><strong>Start Time:</strong> <%= @auction.startTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+      <p><strong>End Time:</strong> <%= @auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+    </div>
+
+    <% if @auction.status == 'active' && current_account.role == 'buyer' %>
+  <div class="mt-6">
+    <h2 class="text-xl font-semibold mb-2">Place a Bid</h2>
+    <%= form_with(model: [@auction, Bid.new], local: true, class: "max-w-md") do |form| %>
+      <div class="mb-4">
+        <%= form.label :amount, class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= form.number_field :amount, step: 0.01, min: @auction.currentPrice + 0.01, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+      </div>
+      <%= form.submit "Place Bid", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+    <% end %>
+  </div>
+<% end %>
+
+
+    <% if @auction.bids.any? %>
+      <div class="mt-6">
+        <h2 class="text-xl font-semibold mb-2">Bid History</h2>
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="text-left">Bidder</th>
+              <th class="text-left">Amount</th>
+              <th class="text-left">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @auction.bids.order(created_at: :desc).each do |bid| %>
+              <tr>
+                <td><%= bid.bidder.displayName %></td>
+                <td><%= number_to_currency(bid.amount) %></td>
+                <td><%= bid.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+
+  <%= link_to "Back to Items", items_path, class: "mt-4 inline-block text-blue-500 hover:text-blue-700" %>
+</div>

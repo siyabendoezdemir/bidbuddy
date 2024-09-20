@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  auction: one
+  bidder: one
+  amount: 9.99
+  timestamp: 2024-09-20 08:36:58
+
+two:
+  auction: two
+  bidder: two
+  amount: 9.99
+  timestamp: 2024-09-20 08:36:58

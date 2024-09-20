@@ -1,0 +1,5 @@
+<% content_for :title, "Dashboard - #{current_account.role.capitalize}" %>
+
+<div class="dashboard">
+  <%= render partial: current_account.role %>
+</div>
