@@ -31,4 +31,10 @@ Rails.application.routes.draw do
   get "/admin", to: "admin#index"
   get "/admin/auctions/:id/review", to: "admin#review_auction", as: "review_auction_admin"
   post "/admin/auctions/:id/process", to: "admin#process_auction", as: "process_auction_admin"
+
+  namespace :admin do
+    get "/", to: "dashboard#index"
+    resources :auctions, only: [ :index, :show ]
+    resources :accounts, only: [ :index, :show ]
+  end
 end

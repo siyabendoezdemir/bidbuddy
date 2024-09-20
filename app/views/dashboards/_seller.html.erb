@@ -1,53 +1,76 @@
-<h2>Welcome, <%= current_account.displayName %>!</h2>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  <h2 class="text-3xl font-bold text-gray-900 mb-6">Welcome, <%= current_account.displayName %>!</h2>
 
-<h3>My Items</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Item Name</th>
-      <th>Starting Price</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @my_items.each do |item| %>
-      <tr>
-        <td><%= item.name %></td>
-        <td><%= number_to_currency(item.startingPrice) %></td>
-        <td><%= item.auction&.status&.capitalize || 'Not Listed' %></td>
-        <td>
-          <% if item.auction %>
-            <%= link_to "View Auction", auction_path(item.auction) %>
-          <% else %>
-            <%= link_to "Create Auction", new_auction_path(item_id: item.id) %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="mb-12">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-2xl font-semibold text-gray-800">My Items</h3>
+      <%= link_to "Add New Item", new_item_path, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <% if @my_items.any? %>
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Starting Price</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @my_items.each do |item| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= item.name %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_to_currency(item.startingPrice) %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= item.auction&.status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+                    <%= item.auction&.status&.capitalize || 'Not Listed' %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <% if item.auction %>
+                    <%= link_to "View Auction", auction_path(item.auction), class: "text-indigo-600 hover:text-indigo-900" %>
+                  <% else %>
+                    <%= link_to "Create Auction", new_auction_path(item_id: item.id), class: "text-green-600 hover:text-green-900" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="px-6 py-4 text-sm text-gray-500">You haven't added any items yet.</p>
+      <% end %>
+    </div>
+  </div>
 
-<h3>Active Auctions</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Current Price</th>
-      <th>End Time</th>
-      <th>Bids</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @active_auctions.each do |auction| %>
-      <tr>
-        <td><%= auction.item.name %></td>
-        <td><%= number_to_currency(auction.currentPrice) %></td>
-        <td><%= auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></td>
-        <td><%= auction.bids.count %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= link_to "Add New Item", new_item_path %>
+  <div>
+    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Active Auctions</h3>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <% if @active_auctions.any? %>
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Price</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Time</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bids</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @active_auctions.each do |auction| %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= auction.item.name %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_to_currency(auction.currentPrice) %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= auction.bids.count %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="px-6 py-4 text-sm text-gray-500">You don't have any active auctions at the moment.</p>
+      <% end %>
+    </div>
+  </div>
+</div>

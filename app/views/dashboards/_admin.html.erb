@@ -1,47 +1,96 @@
-<h2>Admin Dashboard</h2>
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-3xl font-bold mb-6">Admin Dashboard</h2>
 
-<h3>Recent Auctions</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Item</th>
-      <th>Seller</th>
-      <th>Current Price</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @recent_auctions.each do |auction| %>
-      <tr>
-        <td><%= auction.item.name %></td>
-        <td><%= auction.item.seller.displayName %></td>
-        <td><%= number_to_currency(auction.currentPrice) %></td>
-        <td><%= auction.status.capitalize %></td>
-        <td><%= link_to "View Auction", auction_path(auction) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="mb-12">
+    <h3 class="text-2xl font-semibold mb-4">Recent Auctions</h3>
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+      <table class="min-w-full leading-normal">
+        <thead>
+          <tr>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Item
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Seller
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Current Price
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Status
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_auctions.each do |auction| %>
+            <tr>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= auction.item.name %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= auction.item.seller.displayName %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= number_to_currency(auction.currentPrice) %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                  <span aria-hidden class="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
+                  <span class="relative"><%= auction.status.capitalize %></span>
+                </span>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <%= link_to "View Auction", auction_path(auction), class: "text-blue-600 hover:text-blue-900" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-<h3>Recent Accounts</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Display Name</th>
-      <th>Email</th>
-      <th>Role</th>
-      <th>Created At</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @recent_accounts.each do |account| %>
-      <tr>
-        <td><%= account.displayName %></td>
-        <td><%= account.email %></td>
-        <td><%= account.role.capitalize %></td>
-        <td><%= account.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div>
+    <h3 class="text-2xl font-semibold mb-4">Recent Accounts</h3>
+    <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+      <table class="min-w-full leading-normal">
+        <thead>
+          <tr>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Display Name
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Email
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Role
+            </th>
+            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              Created At
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_accounts.each do |account| %>
+            <tr>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= account.displayName %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= account.email %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= account.role.capitalize %></p>
+              </td>
+              <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                <p class="text-gray-900 whitespace-no-wrap"><%= account.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
