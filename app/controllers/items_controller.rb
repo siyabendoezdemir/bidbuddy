@@ -26,7 +26,12 @@ class ItemsController < ApplicationController
   def update
     @item = current_account.items.find(params[:id])
     if @item.update(item_params)
-      redirect_to items_path, notice: "Item was successfully updated."
+      if params[:item][:resubmit] == "true" && @item.auction&.status == "declined"
+        @item.auction.update(status: "pending", admin_message: nil)
+        redirect_to items_path, notice: "Item was successfully updated and resubmitted for approval."
+      else
+        redirect_to items_path, notice: "Item was successfully updated."
+      end
     else
       render :edit
     end

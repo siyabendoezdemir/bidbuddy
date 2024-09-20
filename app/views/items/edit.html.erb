@@ -1,4 +1,14 @@
 <div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-6">Edit Item</h1>
+  <h1 class="text-3xl font-bold mb-6">
+    <%= @item.auction&.status == 'declined' ? "Edit and Resubmit Item" : "Edit Item" %>
+  </h1>
+  
+  <% if @item.auction&.status == 'declined' && @item.auction.admin_message.present? %>
+    <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      <h2 class="font-bold mb-2">Reason for previous decline:</h2>
+      <p><%= @item.auction.admin_message %></p>
+    </div>
+  <% end %>
+
   <%= render 'form', item: @item %>
 </div>
