@@ -16,15 +16,15 @@ class AuctionsController < ApplicationController
   end
 
   def create
-    @item = current_account.items.find(params[:auction][:item_id])
-    @auction = @item.build_auction(auction_params)
-    @auction.currentPrice = @item.startingPrice
-    @auction.status = "pending"  # Changed from 'active' to 'pending'
+    @auction = Auction.find(params[:auction_id])
+    @bid = @auction.bids.build(bid_params)
+    @bid.bidder = current_account
 
-    if @auction.save
-      redirect_to @auction, notice: "Auction was successfully created and is pending approval."
+    if @bid.save
+      redirect_to @auction, notice: "Bid was successfully placed."
     else
-      render :new
+      flash.now[:alert] = @bid.errors.full_messages.to_sentence
+      render :show
     end
   end
 

@@ -1,70 +1,111 @@
-<div class="container mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-6">Auction for <%= @auction.item.name %></h1>
-
-  <div class="bg-white shadow-md rounded-lg p-6">
-    <div class="mb-4">
-      <h2 class="text-xl font-semibold mb-2">Item Details</h2>
-      <p><strong>Name:</strong> <%= @auction.item.name %></p>
-      <p><strong>Description:</strong> <%= @auction.item.description %></p>
-    </div>
-
-    <div class="mb-4">
-      <h2 class="text-xl font-semibold mb-2">Auction Details</h2>
-      <p><strong>Current Price:</strong> <%= number_to_currency(@auction.currentPrice) %></p>
-      <p>
-        <strong>Status:</strong> 
-        <span class="<%= @auction.status == 'active' ? 'text-green-600' : 'text-red-600' %>">
-          <%= @auction.status.capitalize %>
-        </span>
-      </p>
-      <% if @auction.status == 'declined' && @auction.admin_message.present? %>
-        <p class="mt-2 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          <strong>Reason for declining:</strong> <%= @auction.admin_message %>
-        </p>
-      <% end %>
-      <p><strong>Start Time:</strong> <%= @auction.startTime.strftime("%B %d, %Y at %I:%M %p") %></p>
-      <p><strong>End Time:</strong> <%= @auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></p>
-    </div>
-
-    <% if @auction.status == 'active' && current_account.role == 'buyer' %>
-      <div class="mt-6">
-        <h2 class="text-xl font-semibold mb-2">Place a Bid</h2>
-        <%= form_with(model: [@auction, Bid.new], local: true, class: "max-w-md") do |form| %>
-          <div class="mb-4">
-            <%= form.label :amount, class: "block text-gray-700 text-sm font-bold mb-2" %>
-            <%= form.number_field :amount, step: 0.01, min: @auction.currentPrice + 0.01, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
-          </div>
-          <%= form.submit "Place Bid", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
-        <% end %>
-      </div>
-    <% end %>
-
-    <% if @auction.bids.any? %>
-      <div class="mt-6">
-        <h2 class="text-xl font-semibold mb-2">Bid History</h2>
-        <div class="overflow-x-auto">
-          <table class="min-w-full bg-white">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="py-2 px-4 text-left">Bidder</th>
-                <th class="py-2 px-4 text-left">Amount</th>
-                <th class="py-2 px-4 text-left">Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @auction.bids.order(created_at: :desc).each do |bid| %>
-                <tr class="border-b">
-                  <td class="py-2 px-4"><%= bid.bidder.displayName %></td>
-                  <td class="py-2 px-4"><%= number_to_currency(bid.amount) %></td>
-                  <td class="py-2 px-4"><%= bid.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    <% end %>
+<div class="max-w-3xl mx-auto mt-8 px-4">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold"><%= @auction.item.name %></h1>
+    <%= link_to "Back to Items", items_path, class: "bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded" %>
   </div>
 
-  <%= link_to "Back to Items", items_path, class: "mt-4 inline-block text-blue-500 hover:text-blue-700" %>
+  <div class="bg-white shadow rounded-lg p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <h2 class="text-lg font-semibold mb-2">Item Details</h2>
+        <p class="mb-4"><%= @auction.item.description %></p>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold mb-2">Auction Info</h2>
+        <p class="mb-2"><strong>Current Price:</strong> <%= number_to_currency(@auction.currentPrice) %></p>
+        <p class="mb-2">
+          <strong>Status:</strong>
+          <span class="<%= @auction.status == 'active' ? 'text-green-600' : 'text-red-600' %>">
+            <%= @auction.status.capitalize %>
+          </span>
+        </p>
+        <p class="mb-2"><strong>Start Time:</strong> <%= @auction.startTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+        <p><strong>End Time:</strong> <%= @auction.endTime.strftime("%B %d, %Y at %I:%M %p") %></p>
+      </div>
+    </div>
+  </div>
+
+  <% if @auction.status == 'declined' && @auction.admin_message.present? %>
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
+      <p class="font-bold">Reason for declining:</p>
+      <p><%= @auction.admin_message %></p>
+    </div>
+  <% end %>
+
+  <% if @auction.status == 'active' && current_account.role == 'buyer' %>
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+      <h2 class="text-lg font-semibold mb-4">Place a Bid</h2>
+      <%= form_with(model: [@auction, Bid.new], local: true, class: "space-y-4", id: "bid-form") do |form| %>
+        <div>
+          <%= form.label :amount, class: "block text-sm font-medium text-gray-700" %>
+          <div class="mt-1 relative rounded-md shadow-sm">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <%= form.number_field :amount, step: 0.01, min: @auction.currentPrice + 0.01, required: true, class: "block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md", placeholder: "0.00" %>
+          </div>
+          <p class="mt-2 text-sm text-red-600 hidden" id="bid-error"></p>
+        </div>
+        <%= form.submit "Place Bid", class: "w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded", id: "submit-bid" %>
+      <% end %>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('bid-form');
+        const submitButton = document.getElementById('submit-bid');
+        const bidInput = form.querySelector('input[name="bid[amount]"]');
+        const errorMessage = document.getElementById('bid-error');
+        const minBid = <%= @auction.currentPrice + 0.01 %>;
+
+        function validateBid() {
+          const bidAmount = parseFloat(bidInput.value);
+          if (isNaN(bidAmount) || bidAmount < minBid) {
+            errorMessage.textContent = `Please enter a bid amount greater than $${minBid.toFixed(2)}`;
+            errorMessage.classList.remove('hidden');
+            submitButton.disabled = true;
+          } else {
+            errorMessage.classList.add('hidden');
+            submitButton.disabled = false;
+          }
+        }
+
+        bidInput.addEventListener('input', validateBid);
+        form.addEventListener('submit', function(event) {
+          validateBid();
+          if (submitButton.disabled) {
+            event.preventDefault();
+          }
+        });
+
+        validateBid(); // Run initial validation
+      });
+    </script>
+  <% end %>
+
+  <% if @auction.bids.any? %>
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-semibold mb-4">Bid History</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bidder</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @auction.bids.order(created_at: :desc).each do |bid| %>
+              <tr>
+                <td class="px-4 py-2 whitespace-nowrap"><%= bid.bidder.displayName %></td>
+                <td class="px-4 py-2 whitespace-nowrap"><%= number_to_currency(bid.amount) %></td>
+                <td class="px-4 py-2 whitespace-nowrap"><%= bid.created_at.strftime("%B %d, %Y at %I:%M %p") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
 </div>
