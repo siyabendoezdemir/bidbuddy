@@ -6,8 +6,8 @@ class Account < ApplicationRecord
   has_many :payments, foreign_key: :buyer_id
 
   validates :displayName, presence: true
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 12 }, if: -> { new_record? || !password.nil? }
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, length: { minimum: 12 }, if: -> { new_record? || !password.nil? }
   validates :role, presence: true, inclusion: { in: %w[buyer seller admin] }
 
   normalizes :email, with: -> { _1.strip.downcase }
@@ -17,6 +17,6 @@ class Account < ApplicationRecord
   private
 
   def downcase_email
-    self.email = email.downcase
+    self.email = email.downcase if email.present?
   end
 end
